@@ -9,10 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Check source and private-file exclusions
         run: python3 tools/check_repository.py
       - name: Check publication payloads and image metadata
-        run: python3 tools/audit_publication.py
+        run: |
+          python3 tools/audit_publication.py
+          python3 tools/audit_publication.py --history
       - name: PHP syntax
         run: find www subdoms tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
       - name: Queue and theme tests
