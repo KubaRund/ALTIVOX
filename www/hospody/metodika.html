@@ -1,0 +1,94 @@
+<!doctype html><html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Metodika — Altivox Hospody</title><style>body{max-width:950px;margin:30px auto;padding:20px;background:#f5f5ed;color:#203e31;font:16px/1.65 system-ui}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}a{color:#216b56}</style><a href="./">← Zpět na mapu</a><h1>Metodika a ověření</h1><pre># Ověřená demonstrace — 13. 10. 2026
+
+Skutečné OSM API vrátilo 27 objektů v centru Prahy. Z nich bylo deterministicky vybráno 12 podle OSM ID. Data jsou v `demo-api-pois.json`, původní odpověď v `demo-osm-map.xml`. Automobilové cesty byly získány z `https://router.project-osrm.org`, přesnou verzi veřejného grafu server neoznamuje. Jedná se o skutečná data a skutečné silniční geometrie, nikoli celostátní výsledek. Ve výběru jsou pub a bar; podporu biergarten obsahuje dotaz a syntetický test, skutečný výběr tuto kategorii neobsahuje.
+
+| Konfigurace | Pokrytí výběru | Silniční délka | Doba jízdy | První běh |
+|---|---:|---:|---:|---:|
+| Hierarchie, cluster 4 | 12/12 | 3,5389 km | 7,5017 min | 32,58 s, 29 HTTP |
+| Jedna matice, cluster 48 | 12/12 | 1,9263 km | 4,2783 min | 28,45 s, 25 HTTP |
+
+Porovnání ukazuje cenu malých geografických clusterů: hustá varianta je v tomto výřezu o 43,0 % rychlejší a o 45,6 % kratší. Není to doložené globální optimum. Pro malé výřezy používejte jednu matici, pro velká data hierarchii a porovnejte více velikostí clusteru. Největší přichycení k silnici bylo 18,55 m; žádný vybraný bod nebyl vyřazen. Hodiny nezahrnují návštěvy ani provoz. Lokální přesuny v tomto malém výběru nezlepšily multistart greedy okruh; jejich správnost je ověřena na dalších asymetrických testech.
+
+Otevřete `real-demo-dense/map.html` pro lepší nalezenou trasu, `real-demo/map.html` pro ukázku skutečné dvouúrovňové hierarchie. Obě mají vložená route data; internet potřebují mapové dlaždice a Leaflet. Prohlížeč Edge ověřil načtení mapové knihovny, změnu kategorie, hledání, přepnutí trasy, posuvník zastávek a návrat na celou mapu. Na šířce 375 px nebyl vodorovný overflow ani chyba JavaScriptu.
+
+Reprodukce z uložených dat (v adresáři projektu):
+
+```powershell
+python pubroute.py optimize --input demo-api-pois.json --output real-demo --osrm https://router.project-osrm.org --graph-version public-osrm-observed-2026-10-13-unknown-build --cluster-size 4 --limit 12 --delay 1
+python pubroute.py optimize --input demo-api-pois.json --output real-demo-dense --osrm https://router.project-osrm.org --graph-version public-osrm-observed-2026-10-13-unknown-build --cluster-size 48 --limit 12 --delay 1
+```
+
+Uložená cache dovoluje reprodukci bez nových HTTP dotazů. Pro čerstvý veřejný graf použijte nový identifikátor i nový výstupní adresář. `demo_collect_osm.py` stáhne nový malý výřez přímo z OSM API; pro celou ČR použijte Overpass a lokální OSRM podle README. Náhradní Overpass nakonec také vrátil 251 skutečných objektů ze širšího výřezu; jsou v `demo-pois.json` a původním raw JSON, ale v této demonstraci nebyly routovány.
+
+`synthetic-demo/map.html` je dodatečný výslovně označený model s vymyšlenými podniky a jednosměrnou sítí. `python demo_synthetic.py` spustí celý produkční optimalizátor na modelu a ověří pokrytí 12/12, 11 úseků a existenci jejich geometrie. Modelové hodnoty nejsou čísly pro ČR.
+
+Pět numerických unit testů prošlo. Lokální Docker/OSRM pro ČR nebyl spuštěn: Docker zde není instalovaný. Celostátní kvalita řešení, rychlost ani paměťové nároky proto nejsou zde benchmarkovány.
+
+
+# Automobilová trasa po pub / bar / biergarten v ČR
+
+Python 3.10+; hlavní program používá pouze standardní knihovnu. Data: objekty OpenStreetMap s přesně `amenity=pub`, `bar`, `biergarten`, nikoli všechny existující podniky v zemi. Pořadí je heuristické, bez důkazu globálního optima.
+
+## Spuštění pro ČR
+
+V příkazech pracujte ve složce tohoto projektu. Na Windows lze místo `python` použít `py -3`. Docker Desktop musí mít zapnuté linuxové kontejnery. Příprava celé ČR potřebuje dostatek RAM a disku a může trvat dlouho; na tomto počítači nebyla provedena.
+
+1. V prvním terminálu připravte lokální OSRM a nechte jej běžet:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./setup_osrm.ps1
+```
+
+Skript stáhne Geofabrik PBF ČR, zapíše SHA256 a spustí extract → partition → customize s `car.lua`, poté server MLD na `127.0.0.1:5000`. Image je připnutý na digest oficiální verze 26.10 z registru OSRM. Volitelně změňte `-Image`; při změně dat nebo profilu změňte identifikátor grafu v dalších příkazech. Skript není zde end-to-end ověřen, protože Docker není instalovaný.
+
+2. V druhém terminálu načtěte POI a počítejte:
+
+```powershell
+python pubroute.py fetch --output pois-cz.json
+python pubroute.py optimize --input pois-cz.json --output cz-run --graph-version &quot;SHA256-PBF-plus-image-digest-car-profile&quot; --cluster-size 48
+```
+
+Nahraďte hodnotu `--graph-version` skutečným hashem z `osrm-data/graph-version.txt` a verzí image/profilu. Identifikátor tvoří součást klíče SQLite cache; používání stejného identifikátoru po změně grafu vede ke starým odpovědím. Načtení POI a silnice mají nezávislé časové snímky: datové razítko Overpass je v JSON; verze grafu má být ve stejném období. Overpass endpoint lze přepnout pomocí `--overpass`. Serverový `remark` znamená neúplný výstup a program skončí chybou.
+
+3. Otevřete `cz-run/map.html`, nebo spusťte `python -m http.server 8000` a otevřete `http://localhost:8000/cz-run/map.html`.
+
+## Volby a význam optimalizace
+
+Výchozí cíl je čas jízdy. `--objective distance` minimalizuje **délky nejrychlejších cest vrácených OSRM**, nikoli zaručeně nejkratší silniční spojení dvojic. Skutečné nejkratší automobilové cesty vyžadují odpovídající metriku routovacího profilu a nové předzpracování; samotný přepínač nestačí. Nezaměňujte heuristickou optimalizaci pořadí s přesným řešením TSP.
+
+Výchozí trasa je otevřená a nemá pevný začátek ani konec. Algoritmus sestaví orientovaný okruh a odstraní jeho nejdražší hranu; tím vybírá oba konce v rámci nalezeného okruhu. Není to přesný řešič problému s volnými konci. `--closed` ponechá okruh; jeho počáteční index je pouze způsob zobrazení.
+
+`--limit 12` vytvoří deterministický výřez podle OSM ID, **není reprezentativním vzorkem ČR**. `fetch --bbox south,west,north,east` získá geografický výřez. `--max-snap 250` omezuje vzdálenost podniku od automobilové sítě v metrech. Body mimo limit se uloží do `rejected.json` a výpočet se zastaví. `--allow-partial` dovolí výslovně částečný výsledek. Nedostupné spojení v matici je nekonečné; program je nenahradí vzdušnou čarou ani tiše nevynechá. Selhání greedy konstrukce není důkaz, že neexistuje jiná proveditelná trasa.
+
+Uzly zůstávají na skutečných souřadnicích; cesty končí na přístupovém bodě OSRM. U budov a relací jde o bounding-box center z Overpass, který nemusí být vchodem. OSM objekty jsou deduplikované podle type/id, nikoli podle podniku; budova a bod mohou označovat stejný podnik. Otevírací doby, legalita parkování, provoz, zastávky a přesuny pěšky nejsou v cílové funkci. PBF ČR může omezit cesty, které přirozeně vedou přes zahraničí; pro takové trasy použijte širší konzistentní výřez v OSRM. Trasa nemá výslovnou podmínku zůstat uvnitř hranic.
+
+## Hierarchická heuristika a škálování
+
+Geografické dělení podle nejdelší osy vytváří skupiny do B bodů. V každé skupině OSRM table vrátí orientovanou matici. Greedy konstrukce z každého počátku vybírá nejlepší okruh; až 20 průchodů přesunů jednoho uzlu zlepšuje orientované náklady bez předpokladu symetrie. Největší lokální hrana se rozřízne. Reprezentanti skupin (nejbližší centroidu) se řadí rekurzivně stejným postupem. Skupiny se propojí a skutečná geometrie každé hrany se vypočte přes route. Největší globální hrana se pro otevřenou trasu odstraní.
+
+Matice používají zhruba O(N·B) prvků namísto O(N²). Multistart greedy zhruba O(N·B²), lokální přesuny O(20·N·B). Graf OSRM má vlastní nároky. Spojení skupin jsou heuristická; nejsou optimalizována společně s vnitřními cestami. S rostoucí velikostí clusteru se mění kvalita i náklady. Porovnejte několik B a cílů podle finálních metrik, ne podle místních matic.
+
+Nearest i route se volají postupně, zhruba 2N požadavků, plus tabulky a úrovně hierarchie. To může pro celou ČR trvat dlouho. SQLite ukládá úspěšné odpovědi pro opakované spuštění; změna pořadí může vyžadovat další route odpovědi. Celostátní režim provozujte na vlastním OSRM. Veřejný OSRM je jen pro malou demonstraci, nikdy pro celou ČR. `--delay` omezuje frekvenci požadavků.
+
+## Metriky a artefakty
+
+- `result.json`: zdroj, dotaz, razítko OSM, graf, cíl, pořadí, souřadnice a geometrie, počet vybraných/navštívených/vyřazených bodů, pokrytí výběru, km, hodiny, max. snap, čas výpočtu a počet HTTP/cache zásahů.
+- `matrix_levels`: náklady greedy a lokálně zlepšených **uzavřených** okruhů jednotlivých skupin a reprezentantů. Nejde o globální baseline a hodnoty se nesmějí sčítat jako celostátní úspora.
+- `route.geojson`: skutečné orientované OSRM úseky, bez syntetických spojnic. Délka i čas finální trasy jsou součty odpovědí route, nikoli vzdušné vzdálenosti nebo odhady z table.
+- `map.html`: vložená data, zoom, posun, vyhledávání, filtr kategorií, viditelnost trasy a posuvník pořadí návštěv. Leaflet a podkladové dlaždice potřebují internet; samotná route data jsou vložená.
+- `rejected.json`: vyřazené OSM objekty a důvody. `pois.json.raw.json`: původní odpověď Overpass pro audit.
+
+Pokrytí znamená podíl vybraných OSM objektů, ne podíl všech reálných hospod. Celostátní výpočet nepovažujte za ověřený bez kontroly nezpracovaných bodů, kvality OSM a konkrétního snapshotu silnic.
+
+## Testy
+
+```powershell
+python -m unittest discover -s . -v
+```
+
+Testy ověřují asymetrické přesuny pro otevřenou i uzavřenou trasu, malé přesné optimum enumerací, nedostupná spojení, rekurzivní pokrytí všech ID, převod null a invalidaci cache změnou grafu. Skutečná ukázka a její omezení jsou uvedeny v `DEMO.md`.
+
+## Zdroje a licence dat
+
+[OSRM API](https://project-osrm.org/docs/v26.5.0/http), [oficiální OSRM / Docker postup](https://github.com/Project-OSRM/osrm-backend), [OSRM container registry](https://github.com/project-osrm/osrm-backend/pkgs/container/osrm-backend), [Geofabrik ČR](https://download.geofabrik.de/europe/czech-republic.html), [Overpass QL](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL). Data © OpenStreetMap contributors, [ODbL](https://www.openstreetmap.org/copyright). Při sdílení odvozených dat zachovejte atribuci a podmínky ODbL.
+</pre></html>

@@ -1,0 +1,16 @@
+SEM VLOŽ FOTOGRAFIE
+===================
+Pojmenování:
+01.jpg
+02.jpg
+03.jpg
+...
+12.jpg
+
+ALTIVOX stránka si automaticky zkusí načíst 01.jpg až 12.jpg.
+Neexistující soubory skryje. Pokud není žádná fotka, zobrazí se placeholder.
+
+Doporučení:
+- JPG nebo WEBP
+- ideálně 1600–2400 px na delší straně
+- před uploadem lze později doplnit automatickou optimalizaci

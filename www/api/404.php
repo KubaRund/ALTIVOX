@@ -1,0 +1,11 @@
+<?php
+declare(strict_types=1);
+require __DIR__ . '/../admin/bootstrap.php';
+$path=substr((string)($_SERVER['REQUEST_URI']??'/'),0,700);
+$rows=av_read_json('404',[]);
+$rows[]=['ts'=>date(DATE_ATOM),'path'=>$path,'ref'=>substr((string)($_SERVER['HTTP_REFERER']??''),0,500)];
+if(count($rows)>1000)$rows=array_slice($rows,-1000);
+if(av_is_installed())av_write_json('404',$rows);
+http_response_code(404);
+?><!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404 — ALTIVOX</title>
+<style>body{margin:0;background:#071014;color:#e9f0ec;font:15px ui-monospace,monospace;min-height:100vh}.x{max-width:760px;padding:32px}.k{color:#c7ff3d}h1{font:700 clamp(80px,18vw,200px)/.8 system-ui;margin:15px 0}a{color:#c7ff3d}</style><link rel="stylesheet" href="/css/site.css?v=20261022-theme1"><link rel="stylesheet" href="/api/theme.php"><script defer src="/js/site.js?v=20261022-theme1"></script></head><body><header class="header av-header"><a class="brand" href="/"><span class="mark">▲</span>ALTIVOX</a><button class="menu" type="button" aria-label="Otevřít menu" aria-controls="av-main-nav" aria-expanded="false">MENU</button><nav id="av-main-nav" aria-label="Hlavní navigace"><a data-sec="field" href="/expeditions/">FIELD</a><a data-sec="gear" href="/gear/">GEAR</a><a data-sec="signal" href="/tech/">SIGNAL</a><a data-sec="lab" href="/lab/">LAB</a><a data-sec="tools" href="/tools/">TOOLS</a><a data-sec="nastroje" href="/nastroje/">UČEBNA</a><a data-sec="gallery" href="/gallery/">GALLERY</a></nav></header><div class="x av-error"><div class="k">ALTIVOX / SIGNAL LOST</div><h1>404.</h1><p>Tahle stopa v archivu neexistuje.</p><a href="/">RETURN TO FIELD SYSTEM →</a></div><footer class="av-footer"><a class="av-footer-brand" href="/"><span>▲</span> ALTIVOX</a><nav class="av-footer-links" aria-label="Další části webu"><a href="/meteo/">METEO</a><a href="/meteo/cameras/">WEBCAMS</a><a href="/halloween/">HALLOWEEN</a><a href="/journal/">ZÁPISKY</a><a href="/objectives/">CÍLE</a><a href="/about/">O ALTIVOXU</a></nav><small>FIELD / SIGNAL / MAKE · 2026</small></footer></body></html>

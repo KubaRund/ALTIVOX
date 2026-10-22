@@ -1,0 +1,27 @@
+Options -Indexes
+DirectoryIndex index.html index.php
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://www.altivox.cz%{REQUEST_URI} [R=301,L]
+RewriteRule ^(?:web|cleanup-backup[^/]*|ALTIVOX_CC_V1_FORPSI_PATCH)(?:/|$) - [F,L,NC]
+RewriteRule ^admin/setup\.php$ - [F,L,NC]
+RewriteRule ^record/([a-z0-9-]+)/([a-z0-9-]+)/?$ /record.php?type=$1&slug=$2 [L,QSA]
+</IfModule>
+<FilesMatch "(?i)(^\.|\.(?:ps1|cmd|bak|old|key|zip|log)$|\.upload-|^(?:CONTROL_CENTER_SETUP|README.*|PACKAGE_INVENTORY|DATA_VERIFICATION|GEAR_V2_README|MAMMUT_FIX|QA_REPORT|ALTIVOX_AUDIT_REPORT|altivox-test)\.(?:txt|md)$|^KbQXKhYy4VUMuEqaUkxFzt5aeMSVq6SR\.php$)">
+Require all denied
+</FilesMatch>
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+<FilesMatch "\.html?$">
+Header always set Cache-Control "no-cache, must-revalidate"
+</FilesMatch>
+<FilesMatch "\.php$">
+Header always set Cache-Control "no-store"
+</FilesMatch>
+</IfModule>
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript application/json image/svg+xml
+</IfModule>

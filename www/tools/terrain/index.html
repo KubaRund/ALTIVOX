@@ -1,0 +1,46 @@
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>3D Terrain — ALTIVOX</title><meta name="description" content="ALTIVOX 3D Terrain: vytvoř tisknutelný STL model skutečného terénu s podstavcem a vlastním popisem."><link rel="icon" href="/assets/favicon.svg"><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/css/v8.css"><link rel="stylesheet" href="/css/terrain.css?v=1.4"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""><meta name="theme-color" content="#071014"><link rel="stylesheet" href="/css/site.css?v=20261022-theme1"><link rel="stylesheet" href="/api/theme.php"><script defer src="/js/site.js?v=20261022-theme1"></script></head><body data-section="tools">
+<header class="header av-header"><a class="brand" href="/"><span class="mark">▲</span>ALTIVOX</a><button class="menu" type="button" aria-label="Otevřít menu" aria-controls="av-main-nav" aria-expanded="false">MENU</button><nav id="av-main-nav" aria-label="Hlavní navigace"><a data-sec="field" href="/expeditions/">FIELD</a><a data-sec="gear" href="/gear/">GEAR</a><a data-sec="signal" href="/tech/">SIGNAL</a><a data-sec="lab" href="/lab/">LAB</a><a data-sec="tools" href="/tools/">TOOLS</a><a data-sec="nastroje" href="/nastroje/">UČEBNA</a><a data-sec="gallery" href="/gallery/">GALLERY</a></nav></header>
+<main class="terrain-page"><div class="terrain-head"><div><div class="v8-overline">ALTIVOX / MAKE / TERRAIN</div><h1>3D TERRAIN</h1><p>Vyber místo na mapě. ALTIVOX načte výšková data, vytvoří reliéf s pevným podstavcem a připraví jeden STL soubor pro 3D tisk.</p></div><div class="terrain-badges"><span class="terrain-badge">NO ACCOUNT</span><span class="terrain-badge">LIVE ELEVATION</span><span class="terrain-badge">PRINTABLE STL</span></div></div>
+<div class="terrain-layout">
+<section class="terrain-card"><div class="terrain-card-head"><h2>01 / VYBER OBLAST</h2><span id="areaInfo">—</span></div><div class="terrain-map-tools"><div class="terrain-search"><input id="placeSearch" type="search" placeholder="Sokolov, Grossglockner, Krásno…"><button id="searchBtn" type="button">HLEDAT</button></div><div id="terrainMap" class="terrain-map"></div></div><div class="terrain-map-note">Posunuj mapu — modrý obdélník zůstává uprostřed. Velikost oblasti nastavíš vedle.</div></section>
+<section class="terrain-card"><div class="terrain-card-head"><h2>02 / MODEL</h2></div><div class="terrain-settings">
+<div class="terrain-field"><label for="modelName">NÁZEV NA PODSTAVCI</label><input id="modelName" maxlength="32" value="SOKOLOV"></div>
+<div class="terrain-field"><label for="areaKm">ŠÍŘKA OBLASTI</label><div class="terrain-range"><input id="areaKm" type="range" min="1" max="20" step="0.5" value="5"><output id="areaKmOut">5 km</output></div></div>
+<div class="terrain-field"><label for="aspect">TVAR</label><select id="aspect"><option value="1">Čtverec 1 : 1</option><option value="0.75">Krajina 4 : 3</option><option value="0.6667">Krajina 3 : 2</option></select></div>
+<div class="terrain-field"><label for="modelWidth">ŠÍŘKA MODELU</label><div class="terrain-range"><input id="modelWidth" type="range" min="80" max="250" step="5" value="150"><output id="modelWidthOut">150 mm</output></div></div>
+<div class="terrain-field"><span class="terrain-label">ZVÝRAZNĚNÍ VÝŠKY</span><div class="terrain-segments" id="zButtons"><button data-z="1">1×</button><button class="active" data-z="1.5">1,5×</button><button data-z="2">2×</button><button data-z="3">3×</button></div></div>
+<div class="terrain-field"><label for="baseHeight">PODSTAVEC</label><div class="terrain-range"><input id="baseHeight" type="range" min="3" max="12" step="1" value="6"><output id="baseHeightOut">6 mm</output></div></div>
+<div class="terrain-field terrain-source-field">
+<label for="elevationSource">ZDROJ VÝŠKOVÝCH DAT</label>
+<select id="elevationSource">
+<option value="auto" selected>Automaticky · DMR 5G v ČR</option>
+<option value="global">Globální terrain DEM</option>
+</select>
+<div id="sourceBadge" class="terrain-source-badge">AUTO · kontroluji polohu…</div>
+<div class="terrain-quality-note">V ČR Altivox rozpozná dostupnost ČÚZK DMR 5G. Přímé zpracování LAZ bude probíhat přes serverový převodník; do jeho aktivace generátor bezpečně použije současný globální DEM.</div>
+</div>
+<div class="terrain-field"><label for="quality">KVALITA / DETAIL MŘÍŽKY</label><select id="quality">
+<option value="49">Náhled · 49 × 49</option>
+<option value="65">Vysoká · 65 × 65</option>
+<option value="97">Velmi vysoká · 97 × 97</option>
+<option value="129" selected>Ultra · 129 × 129</option>
+<option value="193">Ultra+ · 193 × 193</option>
+<option value="257">MAX · 257 × 257</option>
+</select><div class="terrain-quality-note">Pro finální tisk použij ULTRA / ULTRA+ / MAX. MAX vytváří přes 130 000 trojúhelníků a může se generovat déle.</div></div>
+<label class="terrain-check"><input id="coordsText" type="checkbox" checked> Přidat souřadnice</label><label class="terrain-check"><input id="altivoxMark" type="checkbox" checked> Přidat MADE ON ALTIVOX</label>
+<div class="terrain-field terrain-visual-field">
+<span class="terrain-label">VZHLED 3D NÁHLEDU</span>
+<div class="terrain-visual-modes" id="visualModes">
+<button type="button" data-look="relief" class="active"><span class="look-dot relief"></span>Reliéf</button>
+<button type="button" data-look="elevation"><span class="look-dot elevation"></span>Výšky</button>
+<button type="button" data-look="dark"><span class="look-dot dark"></span>Tmavý</button>
+<button type="button" data-look="wire"><span class="look-dot wire"></span>Síť</button>
+</div>
+<div class="terrain-color-row"><label for="previewColor">BARVA MODELU</label><input id="previewColor" type="color" value="#b9c5c9"><button id="resetColor" type="button">RESET</button></div>
+<label class="terrain-check"><input id="previewEdges" type="checkbox"> Zvýraznit hrany</label>
+</div>
+<button id="generateBtn" class="terrain-generate" type="button">VYTVOŘIT 3D MODEL →</button><div id="terrainStatus" class="terrain-status">Vyber oblast a spusť generování.</div></div></section>
+<section class="terrain-card terrain-preview-card"><div class="terrain-card-head"><h2>03 / 3D NÁHLED</h2><button id="resetView" type="button">RESET VIEW</button></div><div class="terrain-preview"><canvas id="terrainCanvas"></canvas><div class="terrain-preview-help">TAHAT = OTÁČET · KOLEČKO = ZOOM</div></div><div class="terrain-info"><div class="terrain-stat"><small>MODEL</small><strong id="statSize">—</strong></div><div class="terrain-stat"><small>VÝŠKY</small><strong id="statElevation">—</strong></div><div class="terrain-stat"><small>OBLAST</small><strong id="statArea">—</strong></div><div class="terrain-stat"><small>STŘED</small><strong id="statCenter">—</strong></div></div><div class="terrain-downloads"><button id="downloadStl" class="terrain-download" type="button" disabled>↓ STÁHNOUT STL</button></div><div class="terrain-disclaimer">Výšková data jsou převáděna z veřejných terrain tiles. Model je určen pro vizualizaci a 3D tisk, ne pro geodetická měření.</div></section>
+</div></main>
+<footer class="av-footer"><a class="av-footer-brand" href="/"><span>▲</span> ALTIVOX</a><nav class="av-footer-links" aria-label="Další části webu"><a href="/meteo/">METEO</a><a href="/meteo/cameras/">WEBCAMS</a><a href="/halloween/">HALLOWEEN</a><a href="/journal/">ZÁPISKY</a><a href="/objectives/">CÍLE</a><a href="/about/">O ALTIVOXU</a></nav><small>FIELD / SIGNAL / MAKE · 2026</small></footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script><script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script><script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script><script src="/js/v8.js"></script><script src="/js/terrain.js?v=1.4"></script><script defer src="/js/analytics.js"></script></body></html>

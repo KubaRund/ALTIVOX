@@ -1,0 +1,21 @@
+<?php
+declare(strict_types=1);
+require __DIR__.'/admin/bootstrap.php';
+$type=(string)($_GET['type']??'');$slug=(string)($_GET['slug']??'');
+$r=av_find_record($type,$slug);
+if(!$r||empty($r['published'])){require __DIR__.'/api/404.php';exit;}
+$metrics=(array)($r['metrics']??[]);$photos=(array)($r['photos']??[]);
+$accent=['field'=>'#c7ff3d','gear'=>'#57d7ff','signal'=>'#6d8cff','lab'=>'#b680ff','make'=>'#b680ff','objective'=>'#ff745e'][$type]??'#c7ff3d';
+?><!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title><?=av_escape((string)$r['title'])?> — ALTIVOX</title><meta name="description" content="<?=av_escape((string)$r['summary'])?>">
+<link rel="icon" href="/assets/favicon.svg"><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/css/v8.css">
+<style>body{--v8-accent:<?=$accent?>}</style><link rel="stylesheet" href="/css/site.css?v=20261022-theme1"><link rel="stylesheet" href="/api/theme.php"><script defer src="/js/site.js?v=20261022-theme1"></script></head><body data-section="<?=av_escape($type==='field'?'field':$type)?>">
+<header class="header av-header"><a class="brand" href="/"><span class="mark">▲</span>ALTIVOX</a><button class="menu" type="button" aria-label="Otevřít menu" aria-controls="av-main-nav" aria-expanded="false">MENU</button><nav id="av-main-nav" aria-label="Hlavní navigace"><a data-sec="field" href="/expeditions/">FIELD</a><a data-sec="gear" href="/gear/">GEAR</a><a data-sec="signal" href="/tech/">SIGNAL</a><a data-sec="lab" href="/lab/">LAB</a><a data-sec="tools" href="/tools/">TOOLS</a><a data-sec="nastroje" href="/nastroje/">UČEBNA</a><a data-sec="gallery" href="/gallery/">GALLERY</a></nav></header>
+<main><section class="record-hero"><div class="record-kicker"><?=av_escape(strtoupper($type))?> / <?=av_escape(strtoupper((string)$r['status']))?></div><h1><?=av_escape((string)$r['title'])?></h1><p class="deck"><?=av_escape((string)$r['summary'])?></p><div class="record-status done"><?=av_escape((string)($r['date']??''))?><?=($r['location']??'')!==''?' / '.av_escape((string)$r['location']):''?></div></section>
+<?php if($metrics):?><section class="data-grid"><?php foreach($metrics as $k=>$v):?><div class="data-cell"><small><?=av_escape((string)$k)?></small><b><?=av_escape((string)$v)?></b></div><?php endforeach;?></section><?php endif;?>
+<section class="v8-managed-record"><div class="managed-kicker">CONTROL CENTER / PUBLISHED RECORD</div><div class="v8-managed-columns"><div><?=av_render_text((string)$r['body'])?>
+<?php foreach([['FIELD USE',$r['field_use']??''],['STRENGTHS',$r['strengths']??''],['LIMITATIONS',$r['limitations']??''],['TECH NOTES',$r['tech_notes']??'']] as $x) if(trim((string)$x[1])!==''):?><h3><?=av_escape($x[0])?></h3><?=av_render_text((string)$x[1])?><?php endif;?></div>
+<div class="v8-managed-fields"><?php foreach([['BRAND',$r['brand']??''],['CATEGORY',$r['category']??''],['ROLE',$r['role']??''],['DATE',$r['date']??''],['LOCATION',$r['location']??'']] as $x) if((string)$x[1]!==''):?><div><small><?=av_escape($x[0])?></small><b><?=av_escape((string)$x[1])?></b></div><?php endif;?></div></div></section>
+<?php if($photos):?><section class="record-section"><div class="section-id">MEDIA / <?=count($photos)?> PHOTOS</div><div class="photo-series"><?php foreach($photos as $p):?><figure class="photo-item"><img loading="lazy" src="<?=av_escape((string)$p)?>" alt=""></figure><?php endforeach;?></div></section><?php endif;?>
+</main><footer class="av-footer"><a class="av-footer-brand" href="/"><span>▲</span> ALTIVOX</a><nav class="av-footer-links" aria-label="Další části webu"><a href="/meteo/">METEO</a><a href="/meteo/cameras/">WEBCAMS</a><a href="/halloween/">HALLOWEEN</a><a href="/journal/">ZÁPISKY</a><a href="/objectives/">CÍLE</a><a href="/about/">O ALTIVOXU</a></nav><small>FIELD / SIGNAL / MAKE · 2026</small></footer>
+<script src="/js/v8.js"></script><script defer src="/js/analytics.js"></script></body></html>

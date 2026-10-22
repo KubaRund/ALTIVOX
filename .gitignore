@@ -1,0 +1,35 @@
+# Local credentials, operational state and private hosting data
+.env
+.env.*
+!.env.example
+**/config.php
+**/setup.key
+**/.altivox-*/
+www/admin/data/**
+!www/admin/data/.htaccess
+!www/admin/data/.gitkeep
+www/uploads/**
+!www/uploads/.htaccess
+!www/uploads/.gitkeep
+
+# Backups, generated exports and work files
+.deploy-backups/
+backups/
+backup/
+outputs/
+work/
+preview/
+quarantine/
+**/cleanup-backup*/
+**/ALTIVOX_CC_V1_FORPSI_PATCH/
+**/*.upload-*
+**/*.rollback-*
+**/*.failed-*
+**/*.log
+**/__pycache__/
+**/*.pyc
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+node_modules/

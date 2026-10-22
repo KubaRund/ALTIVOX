@@ -1,0 +1,21 @@
+name: Project checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check source and private-file exclusions
+        run: python3 tools/check_repository.py
+      - name: Check publication payloads and image metadata
+        run: python3 tools/audit_publication.py
+      - name: PHP syntax
+        run: find www subdoms tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Queue and theme tests
+        run: |
+          php tests/halloween-core.php
+          php tests/theme-presets.php

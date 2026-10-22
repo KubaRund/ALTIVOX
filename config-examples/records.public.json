@@ -1,0 +1,207 @@
+[
+  {
+    "type": "field",
+    "title": "Beduín D/E",
+    "slug": "beduin",
+    "status": "completed",
+    "summary": "Silová via ferrata D/E.",
+    "date": "2026-08-01",
+    "location": "Czechia",
+    "metrics": {
+      "GRADE": "D/E"
+    },
+    "tags": [
+      "ferrata"
+    ],
+    "cover": "",
+    "url": "/expeditions/beduin/",
+    "body": "",
+    "brand": "",
+    "category": "",
+    "role": "",
+    "field_use": "",
+    "strengths": "",
+    "limitations": "",
+    "tech_notes": "",
+    "published": true,
+    "id": "public-field-beduin",
+    "photos": [],
+    "static_url": "/expeditions/beduin/"
+  },
+  {
+    "type": "field",
+    "title": "Fuscherkarkopf",
+    "slug": "fuscherkarkopf",
+    "status": "completed",
+    "summary": "3 331 m · Hohe Tauern · Field Note 001.",
+    "date": "2026-07-30",
+    "location": "Hohe Tauern, Austria",
+    "metrics": {
+      "SUMMIT": "3 331 M"
+    },
+    "tags": [
+      "alpine"
+    ],
+    "cover": "",
+    "url": "/expeditions/fuscherkarkopf/",
+    "body": "",
+    "brand": "",
+    "category": "",
+    "role": "",
+    "field_use": "",
+    "strengths": "",
+    "limitations": "",
+    "tech_notes": "",
+    "published": true,
+    "id": "public-field-fuscherkarkopf",
+    "photos": [],
+    "static_url": "/expeditions/fuscherkarkopf/"
+  },
+  {
+    "type": "field",
+    "title": "Heinrich-Schwaiger-Haus",
+    "slug": "heinrich-schwaiger-haus",
+    "status": "completed",
+    "summary": "2 802 m · Mooserboden · overnight field note.",
+    "date": "2025-10-11",
+    "location": "Glocknergruppe, Austria",
+    "metrics": {
+      "HUT": "2 802 M"
+    },
+    "tags": [
+      "hut",
+      "overnight"
+    ],
+    "cover": "/assets/photos/expeditions/heinrich-schwaiger-haus/web/18.webp",
+    "url": "/expeditions/heinrich-schwaiger-haus/",
+    "body": "",
+    "brand": "",
+    "category": "",
+    "role": "",
+    "field_use": "",
+    "strengths": "",
+    "limitations": "",
+    "tech_notes": "",
+    "published": true,
+    "id": "public-field-heinrich-schwaiger-haus",
+    "photos": [],
+    "static_url": "/expeditions/heinrich-schwaiger-haus/"
+  },
+  {
+    "type": "gear",
+    "title": "Patizon D590",
+    "slug": "patizon-d590",
+    "status": "active",
+    "summary": "Primary sleep system.",
+    "date": "",
+    "location": "",
+    "metrics": {
+      "COMFORT": "-5 °C",
+      "LIMIT": "-11 °C"
+    },
+    "tags": [
+      "sleep",
+      "bivouac"
+    ],
+    "cover": "",
+    "url": "/gear/patizon-d590/",
+    "body": "",
+    "brand": "",
+    "category": "",
+    "role": "",
+    "field_use": "",
+    "strengths": "",
+    "limitations": "",
+    "tech_notes": "",
+    "published": true,
+    "id": "public-gear-patizon-d590",
+    "photos": [],
+    "static_url": "/gear/patizon-d590/"
+  },
+  {
+    "type": "gear",
+    "title": "La Sportiva Aequilibrium ST GTX",
+    "slug": "aequilibrium-st-gtx",
+    "status": "field-tested",
+    "summary": "Alpine footwear · EU 46.",
+    "date": "",
+    "location": "",
+    "metrics": {
+      "SIZE": "EU 46"
+    },
+    "tags": [
+      "footwear",
+      "alpine"
+    ],
+    "cover": "",
+    "url": "/gear/aequilibrium-st-gtx/",
+    "body": "",
+    "brand": "",
+    "category": "",
+    "role": "",
+    "field_use": "",
+    "strengths": "",
+    "limitations": "",
+    "tech_notes": "",
+    "published": true,
+    "id": "public-gear-aequilibrium-st-gtx",
+    "photos": [],
+    "static_url": "/gear/aequilibrium-st-gtx/"
+  },
+  {
+    "type": "gear",
+    "title": "Mammut Crag Sender Helmet",
+    "slug": "mammut-crag-sender",
+    "status": "active",
+    "summary": "Climbing / alpine helmet.",
+    "date": "",
+    "location": "",
+    "metrics": [],
+    "tags": [
+      "helmet",
+      "climbing"
+    ],
+    "cover": "",
+    "url": "/gear/mammut-crag-sender/",
+    "body": "",
+    "brand": "",
+    "category": "",
+    "role": "",
+    "field_use": "",
+    "strengths": "",
+    "limitations": "",
+    "tech_notes": "",
+    "published": true,
+    "id": "public-gear-mammut-crag-sender",
+    "photos": [],
+    "static_url": "/gear/mammut-crag-sender/"
+  },
+  {
+    "type": "gear",
+    "title": "Samsung Galaxy Watch Ultra",
+    "slug": "galaxy-watch-ultra",
+    "status": "field-tested",
+    "summary": "Field data source.",
+    "date": "",
+    "location": "",
+    "metrics": [],
+    "tags": [
+      "electronics",
+      "data"
+    ],
+    "cover": "",
+    "url": "/gear/galaxy-watch-ultra/",
+    "body": "## SAMSUNG GALAXY WATCH ULTRA\r\n\r\nHlavní hodinky používané pro záznam outdoorových aktivit a sběr dat v terénu. Slouží především pro záznam GPS trasy, času, vzdálenosti, nadmořské výšky, tepové frekvence a dalších údajů během horských výstupů, ferrat a dalších aktivit.\r\n\r\n## FIELD USE\r\n\r\nPoužívám je jako hlavní zdroj dat během výprav. Hodinky zaznamenávají trasu a základní fyziologická data, která následně používám také při vyhodnocování jednotlivých aktivit.\r\n\r\nV terénu je používám především pro:\r\n\r\n- GPS záznam trasy\r\n- měření vzdálenosti a času\r\n- sledování nadmořské výšky\r\n- sledování tepové frekvence\r\n- záznam outdoorových aktivit\r\n- orientační kontrolu výkonu během výstupu\r\n- následnou analýzu aktivity\r\n\r\n## FIELD TESTING\r\n\r\nHodinky jsou pravidelně používané při reálných outdoorových aktivitách.\r\n\r\nJedním z konkrétních záznamů je výstup na Fuscherkarkopf (3 331 m) dne 30. 7. 2026.\r\n\r\nZaznamenaná data:\r\n\r\n- Distance: 3.97 km\r\n- Time: 1:39\r\n- Average HR: 139 bpm\r\n- Steps: 8,000\r\n- VO2 Max: 36 ml/kg/min\r\n- Estimated sweat loss: 1,129 ml\r\n\r\n## ROLE IN ALTIVOX\r\n\r\nSamsung Galaxy Watch Ultra fungují v systému ALTIVOX jako jeden z hlavních zdrojů terénních dat.\r\n\r\nData z hodinek mohou být použita u jednotlivých Field Notes a expedic pro dokumentaci skutečného průběhu aktivity.\r\n\r\n## FIELD NOTES\r\n\r\nHodinky beru jako nástroj pro sběr dat, ne jako náhradu samostatné horské navigace. Jejich hlavní význam je rychlý přístup k údajům během aktivity a následný záznam výpravy.",
+    "brand": "",
+    "category": "",
+    "role": "",
+    "field_use": "",
+    "strengths": "",
+    "limitations": "",
+    "tech_notes": "",
+    "published": true,
+    "id": "public-gear-galaxy-watch-ultra",
+    "photos": [],
+    "static_url": "/gear/galaxy-watch-ultra/"
+  }
+]

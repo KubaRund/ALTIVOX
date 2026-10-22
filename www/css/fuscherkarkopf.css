@@ -1,0 +1,58 @@
+
+/* ALTIVOX / FUSCHERKARKOPF FIELD REPORT */
+.expedition-hero{display:grid;grid-template-columns:.82fr 1.18fr;min-height:78vh;border-bottom:1px solid var(--line)}
+.expedition-hero-copy{padding:140px clamp(24px,7vw,110px) 70px;display:flex;flex-direction:column;justify-content:center}
+.expedition-hero-copy h1{font:700 clamp(70px,10vw,155px)/.78 "Space Grotesk",sans-serif;letter-spacing:-.075em;margin:18px 0 28px}
+.expedition-cover{margin:0;position:relative;overflow:hidden;border-left:1px solid var(--line);background:var(--surface)}
+.expedition-cover img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.94) contrast(1.03)}
+.expedition-cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(7,16,20,.5))}
+.expedition-cover figcaption{position:absolute;z-index:2;left:22px;right:22px;bottom:20px;display:flex;gap:10px;align-items:center;font-size:9px;letter-spacing:.14em}
+.expedition-cover figcaption span{color:var(--accent)}
+.field-story{padding:80px clamp(24px,8vw,130px);border-bottom:1px solid var(--line)}
+.story-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:65px}
+.story-head p{color:var(--muted);max-width:520px;margin:0}
+.story-block{display:grid;grid-template-columns:150px 1fr;gap:30px 42px;padding:55px 0;border-top:1px solid var(--line)}
+.story-block:first-of-type{border-top:0}
+.story-meta{grid-column:1;grid-row:1/4;display:flex;flex-direction:column;gap:7px;padding-top:4px}
+.story-meta b{font:600 28px/1 "Space Grotesk",sans-serif;color:var(--accent)}
+.story-meta span{font-size:9px;letter-spacing:.16em;color:var(--muted)}
+.story-media{grid-column:2;display:grid;gap:10px}
+.story-media.single{grid-template-columns:1fr}
+.story-media.two{grid-template-columns:1fr 1fr}
+.story-media.three{grid-template-columns:repeat(3,1fr)}
+.story-media img{display:block;width:100%;height:100%;min-height:340px;max-height:720px;object-fit:cover;background:var(--surface)}
+.story-block.wide .story-media img{max-height:none;aspect-ratio:16/8}
+.story-block>p{grid-column:2;color:var(--muted);max-width:820px;font-size:16px;line-height:1.75;margin:8px 0 0}
+.archive-section{padding-bottom:110px}
+.archive-head{display:flex;justify-content:space-between;gap:40px;align-items:end;margin-bottom:34px}
+.archive-head h2{font:700 clamp(48px,7vw,96px)/.9 "Space Grotesk",sans-serif;letter-spacing:-.06em;margin:10px 0 0}
+.archive-head p{color:var(--muted);max-width:470px}
+.field-archive{columns:4 260px;column-gap:10px}
+.archive-item{break-inside:avoid;margin:0 0 10px;position:relative;background:var(--surface);overflow:hidden;cursor:zoom-in}
+.archive-item img{display:block;width:100%;height:auto;transition:transform .25s,filter .25s}
+.archive-item:hover img{transform:scale(1.015);filter:brightness(.88)}
+.archive-item figcaption{position:absolute;left:8px;right:8px;bottom:8px;background:rgba(7,16,20,.78);backdrop-filter:blur(6px);padding:6px 8px;display:flex;justify-content:space-between;font-size:8px;letter-spacing:.12em;opacity:0;transition:opacity .2s}
+.archive-item:hover figcaption{opacity:1}
+.archive-item figcaption span{color:var(--accent)}
+.photo-modal{position:fixed;z-index:9999;inset:0;background:rgba(2,7,9,.96);display:grid;place-items:center;padding:40px}
+.photo-modal img{max-width:min(92vw,1800px);max-height:86vh;object-fit:contain}
+.photo-modal button{position:fixed;right:24px;top:18px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:30px;width:48px;height:48px;cursor:pointer}
+.photo-modal>div{position:fixed;left:28px;bottom:22px;color:var(--muted);font-size:9px;letter-spacing:.16em}
+@media(max-width:950px){
+  .expedition-hero{grid-template-columns:1fr}
+  .expedition-cover{border-left:0;border-top:1px solid var(--line);height:60vh}
+  .story-block{grid-template-columns:1fr}
+  .story-meta,.story-media,.story-block>p{grid-column:1}
+  .story-meta{grid-row:auto}
+}
+@media(max-width:650px){
+  .expedition-hero-copy{padding:110px 18px 55px}
+  .field-story{padding:60px 18px}
+  .story-head,.archive-head{align-items:start;flex-direction:column}
+  .story-media.two,.story-media.three{grid-template-columns:1fr}
+  .story-media img{min-height:260px}
+  .archive-section{padding-left:18px;padding-right:18px}
+  .field-archive{columns:2 140px}
+}
+
+.gear-used-links a{border:1px solid var(--line);padding:7px 10px;font-size:9px;letter-spacing:.12em;color:var(--accent)}
