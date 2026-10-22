@@ -109,13 +109,19 @@ def main():
     count = 0
     if args.history:
         entries = subprocess.check_output(['git', 'rev-list', '--objects', '--all'], cwd=ROOT).decode('utf-8').splitlines()
-        for entry in entries:
-            sha, _, name = entry.partition(' ')
-            if not name:
+        names = dict(entry.split(' ', 1) for entry in entries if ' ' in entry)
+        request = ''.join(sha + '\n' for sha in names).encode('ascii')
+        # A single Git process avoids a process launch per object on Windows.
+        payload = subprocess.check_output(['git', 'cat-file', '--batch'], input=request, cwd=ROOT)
+        position = 0
+        while position < len(payload):
+            end = payload.index(b'\n', position)
+            sha, kind, size = payload[position:end].split()
+            start = end + 1
+            position = start + int(size) + 1
+            if kind != b'blob':
                 continue
-            if subprocess.check_output(['git', 'cat-file', '-t', sha], cwd=ROOT).strip() != b'blob':
-                continue
-            inspect(name, subprocess.check_output(['git', 'cat-file', 'blob', sha], cwd=ROOT), findings)
+            inspect(names[sha.decode('ascii')], payload[start:position - 1], findings)
             count += 1
     else:
         names = subprocess.check_output(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z'], cwd=ROOT).decode('utf-8').split('\x00')
