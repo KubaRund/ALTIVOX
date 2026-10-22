@@ -8,6 +8,13 @@ def check():
     errors=[];count=0
     for required in REQUIRED:
         if not (ROOT/required).is_file():errors.append('Missing source: '+required)
+    # The Halloween route runs with script-src/style-src 'self' on its host.
+    halloween_html=(ROOT/'www/halloween/index.html').read_text(encoding='utf-8')
+    halloween_js=(ROOT/'www/halloween/app.js').read_text(encoding='utf-8')
+    if re.search(r'<style\b|\sstyle\s*=',halloween_html,re.I) or 'style="' in halloween_js:
+        errors.append('Halloween contains inline styles incompatible with hosting CSP')
+    if re.search(r'<script\b(?![^>]*\bsrc=)',halloween_html,re.I):
+        errors.append('Halloween contains an inline script incompatible with hosting CSP')
     listing=subprocess.run(['git','ls-files','--cached','--others','--exclude-standard','-z'],cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
     paths=[ROOT/name for name in listing.stdout.decode('utf-8').split(chr(0)) if name] if listing.returncode==0 else ROOT.rglob('*')
     for path in paths:

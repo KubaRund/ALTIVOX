@@ -46,6 +46,8 @@ Pokud se odpověď na operaci ztratí, neprodávejte skupinu znovu novým požad
 
 Aktivní stránka kontroluje změny přibližně každé čtyři sekundy, skrytá méně často. Při chybách se interval prodlužuje. Nezměněný stav používá krátkou odpověď bez opakovaného výpočtu celého přehledu. Zámek má dvousekundový limit, data akce limit 8 MiB. Výpočet průběžně udržuje jen potřebné kapacitní sloty; dlouhá fronta nezvětšuje seznam slotů na celý počet prodaných lidí.
 
+Rozhraní respektuje bezpečnostní pravidla hostingu `script-src 'self'` a `style-src 'self'`: JavaScript i vzhled jsou v samostatných souborech, ukazatel obsazenosti používá nativní `progress`. Kontrola repozitáře odmítá návrat vložených stylů nebo skriptů do tohoto rozhraní.
+
 ## Před otevřením návštěvníkům
 
 Na skutečné síti vyzkoušejte prodej, vyvolání, vstup, odchod a synchronizaci dvou zařízení. Na tabuli zvlášť zapněte zvuk; český hlas závisí na prohlížeči a zařízení. Vyzkoušejte celou obrazovku, tisk a mobilní ovládání. Obslužné odkazy jsou přístupové klíče a nepatří na veřejnou tabuli.
