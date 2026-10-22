@@ -38,6 +38,7 @@ Některé odkazy a prostředky směřují na skutečné domény; běžný lokál
 python tools/check_repository.py
 python tools/audit_publication.py
 php tests/halloween-core.php
+php tests/halloween-groups.php
 php tests/theme-presets.php
 ```
 
@@ -47,6 +48,7 @@ Integrační test Halloween API vyžaduje spuštěný místní server:
 
 ```sh
 python tests/halloween-api.py http://127.0.0.1:8000/halloween/
+python tests/halloween-groups-api.py http://127.0.0.1:8000/halloween/
 ```
 
 Test vytváří vlastní akci a nakonec ji uzavře. Spouštějte jej v odděleném vývojovém úložišti; provozní limity a soubory akcí se na testy také vztahují.

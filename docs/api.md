@@ -49,6 +49,24 @@ U souborů je dovoleno nejvýše 15 položek po 10 MiB, celkem 30 MiB. Povolené
 
 ## Halloween — `/halloween/api.php`
 
+### Současné číslované skupiny
+
+Nové rozhraní posílá při `create` také `version: 2`. Jde o verzi datového formátu, nikoli název veřejné aplikace. `name` je název, `capacity` 1–30 (výchozí 30), `gapSeconds` 0–300 (výchozí 120), `start` první číslo skupiny (výchozí 1). Plánovaná délka průchodu je pevně 900 sekund.
+
+`sell` přijímá `count` 1–6 a vytvoří **jednu** skupinu. Výsledek má `group` (interní ID), `number` a `size`. Čítač se zvýší o jednu skupinu, nikoli o počet jejích členů. Skupiny obsahují `id`, `number`, `size`, `order`, `status`, `created`, `called`, `entered`, `exited`; neobsahují jednotlivá čísla osob.
+
+Akce `next`, `repeat`, `enter`, `exit`, `missed`, `return`, `cancel`, `pause`, `settings`, `close` mají obdobný účel jako níže popsaný historický formát. `merge` se nepoužívá. Nová `pacing` přijímá `gapSeconds`; povolena je vyvolávání, sklepu a správci. Prodejce ji měnit nemůže. Všechny změny mimo `create` vyžadují unikátní `request` a příslušný obslužný `key`.
+
+`next` odmítá další vyvolání, dokud předchozí vyvolaná skupina nebyla odbavena, neuplynul rozestup od posledního skutečného vstupu nebo chybí místa. `enter` znovu kontroluje stav, rozestup a kapacitu. `exit` uvolňuje pouze skutečně přítomnou skupinu. Vypršení 15 minut stav samo nemění.
+
+Snapshot obsahuje `version`, `sold` (historický počet lidí), `soldGroups`, počty lidí podle stavů, `queueGroups`, veřejné `called`, prvních 100 skupin `queue` a historii vyvolání `calls`. Obsluze navíc poskytne `groups`, `lastEntry`, `nextAllowed`, `canCall`; pouze správci `keys`. Veřejný výstup tyto soukromé položky neobsahuje. `eta: null` znamená pozastavení, uzavření nebo nejistý odchod potřebný pro další odhad.
+
+Čtení může poslat `knownRevision` a `knownRole`. Pokud souhlasí se serverem, odpověď je jen `{unchanged: true, now, role}`. Při změně nebo nesouladu role vrací celý aktuální snapshot. Klient přepočítává běžící odpočty podle času serveru. Identifikátory operací jsou idempotentní v rámci posledních 1 000 požadavků; maximem akce je 10 000 skupin a 8 MiB stavu.
+
+### Historický datový formát
+
+Následující popis platí pro dřívější akce bez `version: 2`. Zachování jeho čtení není automatickou migrací staré fronty na nová skupinová čísla. Současná aplikace při takovém odkazu nabídne založení nové akce.
+
 POST JSON, nejvýše 32 KiB, hlavičky no-store a nosniff. `create` přijímá `name`, `capacity` (1–100), `minutes` (0,5–60), `start` (1–999999) a vrací `{state}` správce. Akce platí 30 dnů. Provozní strop je 300 uložených akcí a 12 vytvoření z jedné IP za hodinu.
 
 `read` přijímá `id`, volitelně obslužný `key` a návštěvnické `number`. Bez platného klíče poskytuje veřejný přehled; veřejný výstup neobsahuje soukromé role. Ostatní akce vyžadují oprávnění příslušné role a unikátní `request` o délce 16–80 znaků z písmen, číslic a pomlček.

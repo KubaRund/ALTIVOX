@@ -19,7 +19,7 @@ Repozitář zachycuje nasazenou verzi z 22. října 2026, včetně bezpečnostn�
 | FIELD / GEAR / SIGNAL / LAB | Výpravy, zkušenosti s vybavením, technika a experimenty, doplněné fotografiemi a ilustracemi |
 | Učebna | 15 nástrojů: třídní služby s tiskem do PDF, hlasování, časovače, skupiny, QR, sdílení souborů a společná tabule |
 | Výukový web | Témata fyziky, informatiky a výtvarné výchovy pro základní školu, vysvětlení, obrázky a vložená videa |
-| Halloween | Pokladna, skupiny vstupenek, FIFO fronta, vyvolávání, evidence průchodu, tabule a návštěvnické QR |
+| Halloween | Prodej skupin po 1–6 lidech, FIFO fronta, rozestupy, evidence průchodu, kapacita 30 lidí a veřejná tabule |
 | Hospody | Celostátní výřez OSM pro hospody, bary a pivní zahrádky, filtry a ukázka práce s trasou |
 | Control Center | Publikování záznamů, média, přehled návštěvnosti, export a čtyři barevné předvolby s vlastní paletou |
 
@@ -81,6 +81,7 @@ python tools/check_repository.py
 python tools/audit_publication.py
 python tools/audit_publication.py --history
 php tests/halloween-core.php
+php tests/halloween-groups.php
 php tests/theme-presets.php
 ```
 

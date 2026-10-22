@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__.'/core-v2.php';
 // Queue rules are shared by the API and deterministic tests.
 function hw_error(string $message, int $code = 400): never { throw new DomainException($message, $code); }
 function hw_int(mixed $v, int $min, int $max, string $label): int {
-    if (filter_var($v, FILTER_VALIDATE_INT) === false || (int)$v < $min || (int)$v > $max) hw_error("$label: zadejte celé číslo $min–$max.");
+    if (filter_var($v, FILTER_VALIDATE_INT) === false || (int)$v < $min || (int)$v > $max) hw_error("$label: zadejte celé číslo {$min}–{$max}.");
     return (int)$v;
 }
 function hw_settings(array $in): array {
@@ -15,6 +16,7 @@ function hw_settings(array $in): array {
     return ['name' => $name, 'capacity' => hw_int($in['capacity'] ?? 6, 1, 100, 'Kapacita'), 'minutes' => $minutes];
 }
 function hw_new(array $in, int $now): array {
+    if(($in['version']??1)===2) return hw2_new($in,$now);
     return ['id' => bin2hex(random_bytes(12)), 'keys' => array_combine(['admin','cashier','caller','cellar'], array_map(fn() => bin2hex(random_bytes(32)), range(1,4))),
         'created' => $now, 'expires' => $now + 30 * 86400, 'revision' => 0, 'closed' => false, 'paused' => false,
         'settings' => hw_settings($in), 'nextNumber' => hw_int($in['start'] ?? 1, 1, 999999, 'První vstupenka'),
@@ -47,6 +49,7 @@ function hw_call(array &$s, string $id, int $now, bool $repeat = false): void {
     $s['calls'] = array_slice($s['calls'], -50);
 }
 function hw_apply(array &$s, string $action, array $in, string $role, int $now): array {
+    if(($s['version']??1)===2) return hw2_apply($s,$action,$in,$role,$now);
     $allowed = ['sell'=>['cashier'], 'merge'=>['cashier'], 'cancel'=>['cashier'], 'next'=>['caller'], 'repeat'=>['caller'], 'missed'=>['caller'], 'return'=>['caller'], 'enter'=>['cellar'], 'exit'=>['cellar'], 'settings'=>[], 'pause'=>['caller'], 'close'=>[]];
     if (!array_key_exists($action, $allowed)) hw_error('Neznámá akce.');
     if ($role !== 'admin' && !in_array($role, $allowed[$action], true)) hw_error('Pro tuto akci nemáte oprávnění.', 403);
@@ -110,6 +113,7 @@ function hw_apply(array &$s, string $action, array $in, string $role, int $now):
     $s['revision']++;return $result;
 }
 function hw_snapshot(array $s, string $role, int $now, int $number=0): array {
+    if(($s['version']??1)===2) return hw2_snapshot($s,$role,$now);
     $durations=[];foreach($s['groups'] as $g)if($g['status']==='done' && $g['entered']!==null && $g['exited']>$g['entered'])$durations[]=$g['exited']-$g['entered'];
     $recent=array_slice($durations,-20);$duration=$recent?max(30,min(3600,(int)round(array_sum($recent)/count($recent)))):(int)round($s['settings']['minutes']*60);
     $capacity=$s['settings']['capacity'];$releases=[];
@@ -120,7 +124,7 @@ function hw_snapshot(array $s, string $role, int $now, int $number=0): array {
     $estimates=[];$queue=hw_queue($s);$cursor=$now;
     foreach($queue as $i=>$g) {
         $need=count($g['numbers']);$start=$cursor;
-        while(true){$active=array_values(array_filter($releases,fn($t)=>$t>$start));if(count($active)+$need<=$capacity)break;sort($active);$start=$active[0];}
+        while(true){$releases=array_values(array_filter($releases,fn($t)=>$t>$start));if(count($releases)+$need<=$capacity)break;sort($releases);$start=$releases[0];}
         $cursor=$start;$end=$start+$duration;for($j=0;$j<$need;$j++)$releases[]=$end;
         $estimates[$g['id']]=['position'=>$i+1,'eta'=>($s['paused']||$s['closed'])?null:$start];
     }

@@ -22,4 +22,20 @@ jobs:
       - name: Queue and theme tests
         run: |
           php tests/halloween-core.php
+          php tests/halloween-groups.php
           php tests/theme-presets.php
+      - name: Concurrent group API integration
+        run: |
+          export ALTIVOX_HALLOWEEN_DATA="$RUNNER_TEMP/halloween-integration"
+          php -S 127.0.0.1:8788 -t www > "$RUNNER_TEMP/halloween-first.log" 2>&1 &
+          first=$!
+          php -S 127.0.0.1:8789 -t www > "$RUNNER_TEMP/halloween-second.log" 2>&1 &
+          second=$!
+          trap 'kill "$first" "$second"' EXIT
+          for port in 8788 8789; do
+            for attempt in $(seq 1 30); do
+              curl --silent --output /dev/null "http://127.0.0.1:$port/halloween/api.php" && break
+              sleep 0.2
+            done
+          done
+          python3 tests/halloween-groups-api.py http://127.0.0.1:8788/halloween/ http://127.0.0.1:8789/halloween/
